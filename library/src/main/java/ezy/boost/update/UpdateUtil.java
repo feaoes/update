@@ -134,15 +134,15 @@ public class UpdateUtil {
         if (!apk.exists()) {
             return false;
         }
-        String _md5 = md5(apk);
-        if (TextUtils.isEmpty(_md5)) {
-            return false;
-        }
-        boolean result = _md5 != null && _md5.equalsIgnoreCase(md5);
-        if (!result) {
-            apk.delete();
-        }
-        return result;
+//        String _md5 = md5(apk);
+//        if (TextUtils.isEmpty(_md5)) {
+//            return false;
+//        }
+//        boolean result = _md5 != null && _md5.equalsIgnoreCase(md5);
+//        if (!result) {
+//            apk.delete();
+//        }
+        return true;
     }
 
 

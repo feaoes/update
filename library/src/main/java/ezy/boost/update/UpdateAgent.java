@@ -17,18 +17,24 @@
 package ezy.boost.update;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.NotificationCompat;
 import android.text.format.Formatter;
 import android.text.method.ScrollingMovementMethod;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.daimajia.numberprogressbar.NumberProgressBar;
 
 import java.io.File;
 
@@ -297,8 +303,15 @@ class UpdateAgent implements ICheckAgent, IUpdateAgent, IDownloadAgent {
                 return;
             }
             final UpdateInfo info = agent.getInfo();
-            String size = Formatter.formatShortFileSize(mContext, info.size);
-            String content = String.format("最新版本：%1$s\n新版本大小：%2$s\n\n更新内容\n%3$s", info.versionName, size, info.updateContent);
+            String content;
+            if(info.size==0){
+                content = String.format("最新版本：%1$s\n\n更新内容\n%2$s", info.versionName, info.updateContent);
+
+            }else{
+                String size = Formatter.formatShortFileSize(mContext, info.size);
+                content = String.format("最新版本：%1$s\n新版本大小：%2$s\n\n更新内容\n%3$s", info.versionName, size, info.updateContent);
+            }
+
 
             final AlertDialog dialog = new AlertDialog.Builder(mContext).create();
 
@@ -349,9 +362,10 @@ class UpdateAgent implements ICheckAgent, IUpdateAgent, IDownloadAgent {
         }
     }
 
-    private static class DefaultDialogDownloadListener implements OnDownloadListener {
+        private static class DefaultDialogDownloadListener implements OnDownloadListener {
         private Context mContext;
-        private ProgressDialog mDialog;
+        private Dialog mDialog;
+        private NumberProgressBar progressBar;
 
         public DefaultDialogDownloadListener(Context context) {
             mContext = context;
@@ -360,20 +374,50 @@ class UpdateAgent implements ICheckAgent, IUpdateAgent, IDownloadAgent {
         @Override
         public void onStart() {
             if (mContext instanceof Activity && !((Activity) mContext).isFinishing()) {
-                ProgressDialog dialog = new ProgressDialog(mContext);
-                dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                dialog.setMessage("下载中...");
-                dialog.setIndeterminate(false);
+                AlertDialog dialog = new AlertDialog.Builder(mContext).create();
+//                dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//                dialog.setMessage("下载中...");
+//                dialog.setIndeterminate(false);
+                View inflate = LayoutInflater.from(mContext).inflate(R.layout.progres_horzon, null);
+                NumberProgressBar progressBar = (NumberProgressBar) inflate.findViewById(R.id.progressbar);
                 dialog.setCancelable(false);
+//                ProgressBar progressBar = new ProgressBar(mContext);
+                progressBar.setProgress(0);
+                dialog.setView(inflate);
+                setDialogFull(dialog);
                 dialog.show();
                 mDialog = dialog;
+                this.progressBar = progressBar;
             }
+        }
+
+        private void setDialogFull(final Dialog mDialog) {
+            mDialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            mDialog.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+                @Override
+                public void onSystemUiVisibilityChange(int visibility) {
+                    int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                            //布局位于状态栏下方
+                            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                            //全屏
+                            View.SYSTEM_UI_FLAG_FULLSCREEN |
+                            //隐藏导航栏
+                            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+                    if (Build.VERSION.SDK_INT >= 19) {
+                        uiOptions |= 0x00001000;
+                    } else {
+                        uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+                    }
+                    mDialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+                }
+            });
         }
 
         @Override
         public void onProgress(int i) {
-            if (mDialog != null) {
-                mDialog.setProgress(i);
+            if (progressBar != null) {
+                progressBar.setProgress(i);
             }
         }
 
