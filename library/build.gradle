@@ -30,7 +30,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:support-annotations:27.1.1'
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.daimajia.numberprogressbar:library:1.4@aar'
+    api 'com.daimajia.numberprogressbar:library:1.4@aar'
 }
 
 
