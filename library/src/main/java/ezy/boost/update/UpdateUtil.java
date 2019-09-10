@@ -125,9 +125,9 @@ public class UpdateUtil {
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
-//        if (force) {
-//            System.exit(0);
-//        }
+        if (force) {
+            System.exit(0);
+        }
     }
 
     public static boolean verify(File apk, String md5) {
