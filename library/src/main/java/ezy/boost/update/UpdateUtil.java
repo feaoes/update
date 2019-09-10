@@ -121,13 +121,13 @@ public class UpdateUtil {
         } else {
             Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".updatefileprovider", file);
             intent.setDataAndType(uri, "application/vnd.android.package-archive");
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
-        if (force) {
-            System.exit(0);
-        }
+//        if (force) {
+//            System.exit(0);
+//        }
     }
 
     public static boolean verify(File apk, String md5) {
