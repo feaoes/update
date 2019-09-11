@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ezy.demo.update;
+package com.swmofang.update;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -35,19 +35,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     String mCheckUrl = "http://client.waimai.baidu.com/message/updatetag";
 
-    String mUpdateUrl = "http://mobile.ac.qq.com/qqcomic_android.apk";
+    String mUpdateUrl = "http://192.168.88.100:8000/V1.0.0.apk";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if ( !isTaskRoot() ) {
+            finish();
+            return;
+        }
         setContentView(R.layout.activity_main);
 
-        UpdateManager.setDebuggable(true);
-        UpdateManager.setWifiOnly(false);
-        UpdateManager.setUrl(mCheckUrl, "yyb");
-        UpdateManager.check(this);
-        check(false, true, false, false, true, 998);
-
+//        UpdateManager.setDebuggable(true);
+//        UpdateManager.setWifiOnly(false);
+//        UpdateManager.setUrl(mUpdateUrl, "yyb");
+//        UpdateManager.check(this);
+//        check(false, true, false, false, true, 998);
+        check(true, true, true, false, true, 998);
         findViewById(R.id.check_update).setOnClickListener(this);
         findViewById(R.id.check_update_cant_ignore).setOnClickListener(this);
         findViewById(R.id.check_update_force).setOnClickListener(this);
@@ -71,9 +75,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 info.hasUpdate = hasUpdate;
                 info.updateContent = "• 支持文字、贴纸、背景音乐，尽情展现欢乐气氛；\n• 两人视频通话支持实时滤镜，丰富滤镜，多彩心情；\n• 图片编辑新增艺术滤镜，一键打造文艺画风；\n• 资料卡新增点赞排行榜，看好友里谁是魅力之王。";
                 info.versionCode = 587;
-                info.versionName = "v5.8.7";
+                info.versionName = "V1.0.0";
                 info.url = mUpdateUrl;
-                info.md5 = "56cf48f10e4cf6043fbf53bbbc4009e3";
+                info.md5 = "V1.0.0";
                 info.size = 10149314;
                 info.isForce = isForce;
                 info.isIgnorable = isIgnorable;

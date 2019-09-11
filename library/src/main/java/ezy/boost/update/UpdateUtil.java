@@ -121,11 +121,18 @@ public class UpdateUtil {
         } else {
             Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".updatefileprovider", file);
             intent.setDataAndType(uri, "application/vnd.android.package-archive");
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
+        //解决 installer 启动模式导致 removeActitivyRecord的问题
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        Log.d("update","install:startActivity");
         context.startActivity(intent);
         if (force) {
+//            Log.d("update","install:System.exit");
+//            if (applicationContext instanceof Activity){
+//                ((Activity) applicationContext).finish();
+//            }
             System.exit(0);
         }
     }
